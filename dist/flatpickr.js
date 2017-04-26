@@ -2,7 +2,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-/*! flatpickr v2.5.8, @license MIT */
+/*! flatpickr v2.5.9, @license MIT */
 function Flatpickr(element, config) {
 	var self = this;
 
@@ -1757,6 +1757,16 @@ function Flatpickr(element, config) {
 
 			if (self.amPM && isHourElem && (step === 1 ? newValue + curValue === 23 : Math.abs(newValue - curValue) > step)) self.amPM.textContent = self.amPM.textContent === "PM" ? "AM" : "PM";
 
+			if (self.config.changeDayAtMidnight && isHourElem) {
+				if (curValue === 23 && newValue === 0) {
+					self.selectedDates[0].setDate(self.selectedDates[0].getDate() + 1);
+					self.redraw();
+				} else if (curValue === 0 && newValue === 23) {
+					self.selectedDates[0].setDate(self.selectedDates[0].getDate() - 1);
+					self.redraw();
+				}
+			}
+
 			input.value = self.pad(newValue);
 		}
 	}
@@ -1797,6 +1807,9 @@ Flatpickr.defaultConfig = {
 
 	// enables the time picker functionality
 	enableTime: false,
+
+	// if true, wrapping the time at midnight will change the day
+	changeDayAtMidnight: false,
 
 	// noCalendar: true will hide the calendar. use for a time picker along w/ enableTime
 	noCalendar: false,
